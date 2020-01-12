@@ -15,6 +15,9 @@ class Signup extends Component {
         this.props.signup({email,password,username,name,contact,history:this.props.history})
         this.props.reset('Signup')
     }
+    handleClick = ()=>{
+        this.props.history.push('/signin')
+    }
     render() { 
         const { handleSubmit, pristine, reset, submitting,form} = this.props
         console.log('form',form)
@@ -70,7 +73,7 @@ class Signup extends Component {
                     
                     </Row>
                     <Button type='submit' color='primary'>Signup</Button>
-                    <p>Already have an acount?<a href={'javascript:void(0);'}>Sign in</a></p>
+                    <p>Already have an acount?<a href={'javascript:void(0);'} onClick={this.handleClick}>Sign in</a></p>
                     </CardFooter>
                     </form>
                 </Card>
