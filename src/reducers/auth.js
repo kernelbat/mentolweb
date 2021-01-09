@@ -1,13 +1,17 @@
-import{
+import {
     LOGIN,
     LOGIN_SUCCESS,
     API_FAILED,
     SIGNUP,
     SIGNUP_SUCCESS,
-    EDIT_PROFILE,
-    EDIT_PROFILE_SUCCESS
+    ADD_MENTOR,
+    ADD_MENTOR_SUCCESS,
+    GET_ACTIONS,
+    GET_ACTIONS_SUCCESS,
+    LIST_MENTOR,
+    LIST_MENTOR_SUCCESS
 } from '../actions/actionTypes';
-import {NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 
 const INIT_STATE = {
     loader: false,
@@ -15,55 +19,86 @@ const INIT_STATE = {
     showMessage: false,
     initURL: '',
     authUser: localStorage.getItem('token'),
-    user_details:{
-        email:'test@test.com',
-        name:'avanish',
-        username:'user',
-        password:'user',
-        contact:'9955887755'
-    }
-  
+    user_details: {
+        email: 'test@test.com',
+        name: 'avanish',
+        username: 'user',
+        password: 'user',
+        contact: '9955887755'
+    },
+    actions: [],
+    mentorList: [],
+    count: 0,
+    page: 1
+
 };
 
-export default(state = INIT_STATE,action)=>{
-    switch(action.type){
+export default (state = INIT_STATE, action) => {
+    switch (action.type) {
 
         case LOGIN:
-            return{
+            return {
                 ...state
             }
         case LOGIN_SUCCESS:
-            return{
+            return {
                 ...state,
-                user_details:action.payload
+                user_details: action.payload
             }
         case API_FAILED:
-            NotificationManager.error(action.payload)
-            return{
+            NotificationManager.error(action.payload ? action.payload : 'Something went wrong!')
+            return {
                 ...state
             }
-        
-            case SIGNUP:
-                return{
-                    ...state
-                }
-            case SIGNUP_SUCCESS:
-                NotificationManager.success('Account created successfully')
-                return{
+
+        case SIGNUP:
+            return {
+                ...state
+            }
+        case SIGNUP_SUCCESS:
+            NotificationManager.success('Account created successfully')
+            return {
+                ...state,
+                user_details: action.payload
+            }
+        case ADD_MENTOR:
+            return {
+                ...state,
+                mentorList: []
+            }
+        case ADD_MENTOR_SUCCESS:
+            NotificationManager.success(action.payload.title)
+            return {
+                ...state,
+            }
+        case GET_ACTIONS:
+            return {
+                ...state
+            }
+        case GET_ACTIONS_SUCCESS:
+            return {
+                ...state,
+                actions: action.payload
+            }
+        case LIST_MENTOR:
+            return {
+                ...state,
+            }
+        case LIST_MENTOR_SUCCESS:
+            console.log('action.payload', action.payload.data)
+            if (!action.payload.page) {
+                return {
                     ...state,
-                    user_details:action.payload
+                    mentorList: action.payload.data,
+                    count: action.payload.count,
                 }
-                case EDIT_PROFILE:
-                    return{
-                        ...state
-                    }
-                case EDIT_PROFILE_SUCCESS:
-                    NotificationManager.success('Profile updated successfully')
-                    return{
-                        ...state,
-                        user_details:action.payload
-                    }
+            }
+            return {
+                ...state,
+                count: action.payload.count,
+                mentorList: [...state.mentorList, ...action.payload.data]
+            }
         default:
-        return state;
+            return state;
     }
 }
